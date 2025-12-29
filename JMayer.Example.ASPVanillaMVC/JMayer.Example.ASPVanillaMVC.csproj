@@ -10,4 +10,8 @@
     <RepositoryUrl>https://github.com/jmayer913/JMayer-Example-ASPVanillaMVC</RepositoryUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="JMayer.Web.Mvc" Version="9.0.0" />
+  </ItemGroup>
+
 </Project>
