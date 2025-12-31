@@ -40,6 +40,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 app.MapStaticAssets();
+app.UseStatusCodePagesWithRedirects("~/Home/Error/{0}");
 
 app.MapControllerRoute(
     name: "default",

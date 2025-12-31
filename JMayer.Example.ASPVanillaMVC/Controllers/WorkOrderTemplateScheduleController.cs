@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JMayer.Example.ASPVanillaMVC.Controllers;
 
-#warning I think I'm only going to allow editing so I should add the Nonaction attribute to the actions I don't intend to use.
-
 /// <summary>
 /// The class manages HTTP requests for views and actions associated with work order template schedules.
 /// </summary>
