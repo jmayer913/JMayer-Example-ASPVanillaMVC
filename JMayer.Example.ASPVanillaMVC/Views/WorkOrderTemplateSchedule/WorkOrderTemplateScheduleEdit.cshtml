@@ -1,0 +1,99 @@
+﻿@model JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplateSchedule
+
+@{
+    ViewData["Title"] = "Edit Work Order Template Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Work Order Templates</h1>
+
+<h4>Edit Schedule for Work Order Template</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Update">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input asp-for="Integer64ID" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="OwnerInteger64ID" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="CreatedOn" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="LastEditedOn" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="ScheduleType" class="control-label">Schedule Frequency</label>
+                <select id="schedule-type-select" asp-for="ScheduleType" class="form-control" title="Select the frequency the schedule occurs">
+                    <option value="0">Daily</option>
+                    <option value="1">Weekly</option>
+                    <option value="2">Monthly</option>
+                    <option value="3">Quarterly</option>
+                    <option value="4">Semiyearly</option>
+                    <option value="5">Yearly</option>
+                </select>
+                <span asp-validation-for="ScheduleType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="StartDate" class="control-label">Start Date</label>
+                <input id="start-date-input" asp-for="StartDate" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" title="Select the day this schedule starts" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="EndDate" class="control-label">End Date</label>
+                <input id="end-date-input" asp-for="EndDate" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" title="Select the last day this schedule ends or clear it if this schedule never ends" type="date" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check my-2">
+                <label class="form-check-label">
+                    <input id="enabled-input" class="form-check-input" asp-for="IsEnabled" title="Check to enable the schedule or uncheck to disable" onchange="onEnabledChange(this)" /> Enabled
+                </label>
+            </div>
+
+            <div class="form-group my-2">
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-controller="WorkOrderTemplate" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        //The function handles enabling/disabling controls based on if the schedule is enabled or not.
+        function onEnabledChange(enableInputControl) {
+            var scheduleTypeSelectControl = $('#schedule-type-select');
+            var startDatetInputControl = $('#start-date-input');
+            var endDateInputControl = $('#end-date-input');
+
+            if (enableInputControl.checked) {
+                scheduleTypeSelectControl.removeAttr('disabled');
+                startDatetInputControl.removeAttr('disabled');
+                endDateInputControl.removeAttr('disabled');
+            }
+            else {
+                scheduleTypeSelectControl.attr('disabled', 'disabled');
+                startDatetInputControl.attr('disabled', 'disabled');
+                endDateInputControl.attr('disabled', 'disabled');
+            }
+        }
+
+        //The function sets the controls states on load.
+        $(document).ready(function() {
+            onEnabledChange($('#enabled-input')[0]);
+        });
+    </script>
+}

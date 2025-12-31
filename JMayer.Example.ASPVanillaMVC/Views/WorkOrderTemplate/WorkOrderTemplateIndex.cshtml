@@ -1,7 +1,8 @@
-﻿@model IEnumerable<JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate>
+﻿@using JMayer.Web.Mvc.Extension
+@model IEnumerable<JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate>
 
 @{
-    ViewData["Title"] = "Work Order Template";
+    ViewData["Title"] = "Create Work Order Template";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -21,27 +22,22 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                Service Type
-                @* @Html.DisplayNameFor(model => model.ServiceType) *@
+                @Html.DisplayNameFor(model => model.ServiceType).SpaceCapitalLetters()
             </th>
             <th>
-                Other Type of Service
-                @* @Html.DisplayNameFor(model => model.OtherTypeOfService) *@
+                @Html.DisplayNameFor(model => model.OtherTypeOfService).SpaceCapitalLetters()
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Priority)
             </th>
             <th>
-                Days Due From Creation
-                @* @Html.DisplayNameFor(model => model.DaysDueFromCreation) *@
+                @Html.DisplayNameFor(model => model.DaysDueFromCreation).SpaceCapitalLetters()
             </th>
             <th>
-                Created On
-                @* @Html.DisplayNameFor(model => model.CreatedOn) *@
+                @Html.DisplayNameFor(model => model.CreatedOn).SpaceCapitalLetters()
             </th>
             <th>
-                Last Edited On
-                @* @Html.DisplayNameFor(model => model.LastEditedOn) *@
+                @Html.DisplayNameFor(model => model.LastEditedOn).SpaceCapitalLetters()
             </th>
         </tr>
     </thead>
@@ -49,8 +45,8 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.ActionLink("Schedule", "EditView", "WorkOrderTemplateSchedule", new { id = item.Integer64ID }) |
                 @Html.ActionLink("Edit", "EditView", new { id = item.Integer64ID }) |
-                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
                 @Html.ActionLink("Delete", "DeleteView", new { id = item.Integer64ID })
             </td>
             <td>

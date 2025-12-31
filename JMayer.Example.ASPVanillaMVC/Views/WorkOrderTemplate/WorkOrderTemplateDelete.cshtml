@@ -1,7 +1,8 @@
-﻿@model JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate
+﻿@using JMayer.Web.Mvc.Extension
+@model JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate
 
 @{
-    ViewData["Title"] = "WorkOrderTemplateDelete";
+    ViewData["Title"] = "Delete Work Order Template";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,15 +25,13 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2 my-2">
-            Service Type
-            @* @Html.DisplayNameFor(model => model.ServiceType) *@
+            @Html.DisplayNameFor(model => model.ServiceType).SpaceCapitalLetters()
         </dt>
         <dd class="col-sm-10 my-2">
             @Html.DisplayFor(model => model.ServiceType)
         </dd>
         <dt class="col-sm-2 my-2">
-            Other Type of Service
-            @* @Html.DisplayNameFor(model => model.OtherTypeOfService) *@
+            @Html.DisplayNameFor(model => model.OtherTypeOfService).SpaceCapitalLetters()
         </dt>
         <dd class="col-sm-10 my-2">
             @Html.DisplayFor(model => model.OtherTypeOfService)
@@ -44,22 +43,19 @@
             @Html.DisplayFor(model => model.Priority)
         </dd>
         <dt class="col-sm-2 my-2">
-            Days Due From Creation
-            @* @Html.DisplayNameFor(model => model.DaysDueFromCreation) *@
+            @Html.DisplayNameFor(model => model.DaysDueFromCreation).SpaceCapitalLetters()
         </dt>
         <dd class="col-sm-10 my-2">
             @Html.DisplayFor(model => model.DaysDueFromCreation)
         </dd>
         <dt class="col-sm-2 my-2">
-            Created On
-            @* @Html.DisplayNameFor(model => model.CreatedOn) *@
+            @Html.DisplayNameFor(model => model.CreatedOn).SpaceCapitalLetters()
         </dt>
         <dd class="col-sm-10 my-2">
             @Html.DisplayFor(model => model.CreatedOn)
         </dd>
         <dt class="col-sm-2 my-2">
-            Last Edited On
-            @* @Html.DisplayNameFor(model => model.LastEditedOn) *@
+            @Html.DisplayNameFor(model => model.LastEditedOn).SpaceCapitalLetters()
         </dt>
         <dd class="col-sm-10 my-2">
             @Html.DisplayFor(model => model.LastEditedOn)

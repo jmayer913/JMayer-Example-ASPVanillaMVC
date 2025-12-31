@@ -7,9 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+WorkOrderTemplateDataLayer workOrderTemplateDataLayer = new();
+WorkOrderTemplateScheduleDataLayer workOrderTemplateScheduleDataLayer = new(workOrderTemplateDataLayer);
+
 //Add the data layers. Because the example data needs to be built before registration and the data
 //layers are memory based, the data layer objects aren't being built with the middleware.
-builder.Services.AddSingleton<IWorkOrderTemplateDataLayer, WorkOrderTemplateDataLayer>();
+builder.Services.AddSingleton<IWorkOrderTemplateDataLayer, WorkOrderTemplateDataLayer>(factory => workOrderTemplateDataLayer);
+builder.Services.AddSingleton<IWorkOrderTemplateScheduleDataLayer, WorkOrderTemplateScheduleDataLayer>(factory => workOrderTemplateScheduleDataLayer);
 
 #endregion
 
