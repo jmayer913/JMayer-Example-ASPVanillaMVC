@@ -11,7 +11,7 @@ public enum WorkOrderTemplateScheduleType
     Daily,
 
     /// <summary>
-    /// The scheduler creates the work order each week on Sunday.
+    /// The scheduler creates the work order each week on Monday.
     /// </summary>
     Weekly,
 

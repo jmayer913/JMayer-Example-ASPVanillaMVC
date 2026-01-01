@@ -1,4 +1,13 @@
+using JMayer.Example.ASPVanillaMVC;
 using JMayer.Example.ASPVanillaMVC.DataLayers;
+
+//TO DO:
+//Unit Tests. (Do for the template & schedule controllers).
+//A create work order now button on the schedule page.
+//Worker to create work orders based on the schedule. Needs to handle create now requests.
+//Unit Tests for the worker.
+//A view only page for created work orders.
+//Unit Tests for the view only page.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,13 +16,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-WorkOrderTemplateDataLayer workOrderTemplateDataLayer = new();
-WorkOrderTemplateScheduleDataLayer workOrderTemplateScheduleDataLayer = new(workOrderTemplateDataLayer);
+WorkOrderTemplateExampleBuilder exampleBuilder = new();
+exampleBuilder.Build();
 
 //Add the data layers. Because the example data needs to be built before registration and the data
 //layers are memory based, the data layer objects aren't being built with the middleware.
-builder.Services.AddSingleton<IWorkOrderTemplateDataLayer, WorkOrderTemplateDataLayer>(factory => workOrderTemplateDataLayer);
-builder.Services.AddSingleton<IWorkOrderTemplateScheduleDataLayer, WorkOrderTemplateScheduleDataLayer>(factory => workOrderTemplateScheduleDataLayer);
+builder.Services.AddSingleton<IWorkOrderTemplateDataLayer, WorkOrderTemplateDataLayer>(factory => (WorkOrderTemplateDataLayer)exampleBuilder.WorkOrderTemplateDataLayer);
+builder.Services.AddSingleton<IWorkOrderTemplateScheduleDataLayer, WorkOrderTemplateScheduleDataLayer>(factory => (WorkOrderTemplateScheduleDataLayer)exampleBuilder.WorkOrderTemplateScheduleDataLayer);
 
 #endregion
 
