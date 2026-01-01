@@ -38,7 +38,7 @@ public class WorkOrderTemplateSchedule : SubDataObject
     /// The copy constructor.
     /// </summary>
     /// <param name="copy">The copy.</param>
-    public WorkOrderTemplateSchedule(WorkOrderTemplate copy) => MapProperties(copy);
+    public WorkOrderTemplateSchedule(WorkOrderTemplateSchedule copy) => MapProperties(copy);
 
     /// <inheritdoc/>
     /// <remarks>Overridden to map properties for this class.</remarks>

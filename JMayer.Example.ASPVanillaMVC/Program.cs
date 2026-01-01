@@ -2,6 +2,7 @@ using JMayer.Example.ASPVanillaMVC;
 using JMayer.Example.ASPVanillaMVC.DataLayers;
 
 //TO DO:
+//I need to make sure start date is less than or equal to end date.
 //Unit Tests. (Do for the template & schedule controllers).
 //A create work order now button on the schedule page.
 //Worker to create work orders based on the schedule. Needs to handle create now requests.
