@@ -1,0 +1,70 @@
+﻿@using JMayer.Web.Mvc.Extension
+@model JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate
+
+@{
+    ViewData["Title"] = "Confirm Work Order Creation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Work Order Templates</h1>
+
+<h3>Are you sure you want to create a work order from this template?</h3>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.ServiceType).SpaceCapitalLetters()
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.ServiceType)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.OtherTypeOfService).SpaceCapitalLetters()
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.OtherTypeOfService)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.DaysDueFromCreation).SpaceCapitalLetters()
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.DaysDueFromCreation)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.CreatedOn).SpaceCapitalLetters()
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 my-2">
+            @Html.DisplayNameFor(model => model.LastEditedOn).SpaceCapitalLetters()
+        </dt>
+        <dd class="col-sm-10 my-2">
+            @Html.DisplayFor(model => model.LastEditedOn)
+        </dd>
+    </dl>
+
+    <form asp-action="CreateWorkOrder" asp-route-id="@Model.Integer64ID">
+        <input type="submit" value="Create Work Order" class="btn btn-primary" /> |
+        <a asp-controller="WorkOrderTemplateSchedule" asp-action="EditView" asp-route-id="@Model.Integer64ID">Back to Schedule</a> |
+        <a asp-controller="WorkOrderTemplate" asp-action="Index">Back to List</a>
+    </form>
+</div>

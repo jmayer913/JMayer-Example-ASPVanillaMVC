@@ -63,6 +63,7 @@
 
             <div class="form-group my-2">
                 <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-controller="WorkOrderTemplate" asp-action="ConfirmCreateWorkOrderView" asp-route-id="@Model.OwnerInteger64ID" class="btn-link">Create Work Order</a> |
                 <a asp-controller="WorkOrderTemplate" asp-action="Index">Back to List</a>
             </div>
         </form>
