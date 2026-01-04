@@ -1,0 +1,78 @@
+﻿@using JMayer.Web.Mvc.Extension
+@model IEnumerable<JMayer.Example.ASPVanillaMVC.Models.WorkOrder>
+
+@{
+    ViewData["Title"] = "Work Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Work Orders</h1>
+
+<p>
+    The website runs a background service which daily creates work orders based on the templates and their schedules. You can also tell the schedule
+    to immediately create the work order; scheduling restrictions are ignored. This page is readonly so you can view the work orders created by the scheduler.
+    <br/>
+    <ul>
+        <li>Daily - The scheduler creates the work order each day.</li>
+        <li>Weekly - The scheduler creates the work order on Monday of each week.</li>
+        <li>Monthly - The scheduler creates the work order on the 1st of each month.</li>
+        <li>Quarterly - The scheduler creates the work order on the 1st of January, April, July and October.</li>
+        <li>Semiyearly - The scheduler creates the work order on the 1st of January and July.</li>
+        <li>Yearly - The scheduler creates the work order on the 1st of January.</li>
+    </ul>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceType).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OtherTypeOfService).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueBy).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedOn).SpaceCapitalLetters()
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OtherTypeOfService)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
