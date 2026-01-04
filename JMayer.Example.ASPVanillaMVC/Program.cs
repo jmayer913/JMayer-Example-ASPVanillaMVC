@@ -2,10 +2,9 @@ using JMayer.Example.ASPVanillaMVC;
 using JMayer.Example.ASPVanillaMVC.DataLayers;
 
 //TO DO:
-//I need to make sure start date is less than or equal to end date. Built-in Compare attribute only does equal comparison so I need to make something custom.
-//Unit Tests. (Do for the template & schedule controllers).
-//A create work order now button on the schedule page.
-//Worker to create work orders based on the schedule. Needs to handle create now requests.
+//I need to make sure start date is less than or equal to end date. Built-in Compare attribute only does equal comparison so I need to make something custom. (Will need to add unit tests for this.)
+//Worker to create work orders based on the schedule.
+//A create work order now button on the schedule page. Update the worker to handle new requests.
 //Unit Tests for the worker.
 //A view only page for created work orders.
 //Unit Tests for the view only page.

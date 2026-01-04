@@ -19,6 +19,7 @@ public class WorkOrderTemplateScheduleDataLayer : StandardSubCRUDDataLayer<WorkO
     /// <param name="workOrderTemplateDataLayer">Used to access the work order template data layer and reac on a create or delete.</param>
     public WorkOrderTemplateScheduleDataLayer(IWorkOrderTemplateDataLayer workOrderTemplateDataLayer)
     {
+        IsOldDataObjectDetectionEnabled = true;
         _workOrderTemplateDataLayer = workOrderTemplateDataLayer;
         _workOrderTemplateDataLayer.Created += WorkOrderTemplateDataLayer_Created;
         _workOrderTemplateDataLayer.Deleted += WorkOrderTemplateDataLayer_Deleted;
