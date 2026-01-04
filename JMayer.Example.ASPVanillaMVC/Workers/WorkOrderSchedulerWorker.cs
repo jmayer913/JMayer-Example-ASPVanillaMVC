@@ -50,7 +50,11 @@ public class WorkOrderSchedulerWorker : BackgroundService
                 }
             }
 
-            await Task.Delay(60_000, stoppingToken);
+            try
+            {
+                await Task.Delay(60_000, stoppingToken);
+            }
+            catch (Exception) { }
         }
     }
 }
