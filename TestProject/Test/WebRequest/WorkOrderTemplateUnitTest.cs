@@ -46,6 +46,70 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
     }
 
     /// <summary>
+    /// The method verifies the work order template controller can return the confirm create work order view when requested.
+    /// </summary>
+    /// <returns>A Task for the async.</returns>
+    [Fact]
+    public async Task VerifyConfirmCreateWorkOrderView()
+    {
+        HttpClient client = _factory.CreateClient();
+        HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrderTemplate/ConfirmCreateWorkOrderView/1");
+
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
+
+        string html = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        //HTML must have been returned.
+        Assert.NotEmpty(html);
+        Assert.StartsWith(Constants.DocTypeHtmlTag, html);
+        Assert.DoesNotContain(Constants.ErrorHtmlSearchTag, html);
+        Assert.DoesNotContain(Constants.NotFoundHtmlSearchTag, html);
+    }
+
+    /// <summary>
+    /// The method verifies the work order template controller returns the not found view when the requested id does not exist.
+    /// </summary>
+    /// <returns>A Task for the async.</returns>
+    [Fact]
+    public async Task VerifyConfirmCreateWorkOrderViewNotFound()
+    {
+        HttpClient client = _factory.CreateClient();
+        HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrderTemplate/ConfirmCreateWorkOrderView/999999");
+
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
+
+        string html = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        //HTML must have been returned.
+        Assert.NotEmpty(html);
+        Assert.StartsWith(Constants.DocTypeHtmlTag, html);
+        Assert.Contains(Constants.NotFoundHtmlSearchTag, html);
+    }
+
+    /// <summary>
+    /// The method verifies the work order template controller can return the confirm create work order view when requested.
+    /// </summary>
+    /// <returns>A Task for the async.</returns>
+    [Fact]
+    public async Task VerifyCreateWorkOrder()
+    {
+        HttpClient client = _factory.CreateClient();
+        HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrderTemplate/CreateWorkOrder/1");
+
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
+
+        string html = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        //HTML must have been returned.
+        Assert.NotEmpty(html);
+        Assert.StartsWith(Constants.DocTypeHtmlTag, html);
+        Assert.DoesNotContain(Constants.ErrorHtmlSearchTag, html);
+    }
+
+    /// <summary>
     /// The method verifies the work order template controller can create a work order template when requested by the user.
     /// </summary>
     /// <param name="name">The friendly name for the work order.</param>
