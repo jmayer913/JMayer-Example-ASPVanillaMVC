@@ -6,8 +6,7 @@ using JMayer.Example.ASPVanillaMVC.Workers;
 //TO DO:
 //I need to make sure start date is less than or equal to end date. Built-in Compare attribute only does equal comparison so I need to make something custom. (Will need to add unit tests for this.)
 //Unit Tests for the worker. (Not 100% sure how to test this since its dependent on the day its ran and right now, I can't simulate the day its ran.)
-//Unit Tests for create work order button.
-//See if I can disable the create work order button when the schedule is disabled.
+//See if I can disable the create work order link when the schedule is disabled.
 //Add description to Welcome page.
 //Create a readme.
 

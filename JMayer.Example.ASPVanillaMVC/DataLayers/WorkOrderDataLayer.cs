@@ -11,9 +11,5 @@ public class WorkOrderDataLayer : StandardCRUDDataLayer<WorkOrder>, IWorkOrderDa
     /// <summary>
     /// The default constructor.
     /// </summary>
-    public WorkOrderDataLayer()
-    {
-        IsOldDataObjectDetectionEnabled = true;
-        IsUniqueNameRequired = true;
-    }
+    public WorkOrderDataLayer() => IsOldDataObjectDetectionEnabled = true;
 }

@@ -44,7 +44,7 @@ public class WorkOrderTemplateController : StandardModelViewController<WorkOrder
         catch (Exception ex)
         {
             Logger.LogError(ex, "Failed to return the Confirm Create Work Order View for the {Type} data object for {ID}.", DataObjectTypeName, id);
-            return Problem();
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -53,6 +53,7 @@ public class WorkOrderTemplateController : StandardModelViewController<WorkOrder
     /// </summary>
     /// <param name="id">The id for the record.</param>
     /// <returns>The work order index view or a negative status code.</returns>
+    [HttpPost]
     public async Task<IActionResult> CreateWorkOrderAsync(long id)
     {
         try
@@ -67,7 +68,7 @@ public class WorkOrderTemplateController : StandardModelViewController<WorkOrder
                 return NotFound();
             }
 
-            _ = _workOrderDataLayer.CreateAsync(new WorkOrder()
+            _ = await _workOrderDataLayer.CreateAsync(new WorkOrder()
             {
                 Description = workOrderTemplate.Description,
                 DueBy = workOrderTemplate.DaysDueFromCreation > 0 ? DateTime.Today.AddDays(workOrderTemplate.DaysDueFromCreation) : null,
@@ -84,7 +85,7 @@ public class WorkOrderTemplateController : StandardModelViewController<WorkOrder
         catch (Exception ex)
         {
             Logger.LogError(ex, "Failed to create the work order from the {ID} template.", id);
-            return Problem();
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }
