@@ -10,7 +10,7 @@ The work order templates page allows the user to add/edit/delete work order temp
 
 ### Add / Edit
 
-On the work order templates page, the user can create or edit an existing template.
+On the work order templates page, the user can create a new template or edit an existing template.
 
 * Name - A friendly name for the template; required and must be unique.
 * Description - A description about the work order; optional.
@@ -25,7 +25,7 @@ On the work order templates page, the user can create or edit an existing templa
 
 ### Delete
 
-On the work order templates page, the user can delete a template. The user will be required to confirm the deletion.
+On the work order templates page, the user can delete a template. The user will be required to confirm the deletion or go back work order template page. Once confirmed, the template will be deleted.
 
 <img width="568" height="413" alt="image" src="https://github.com/user-attachments/assets/18491f1c-201e-4a5f-b5dd-7065822642f8" />
 
