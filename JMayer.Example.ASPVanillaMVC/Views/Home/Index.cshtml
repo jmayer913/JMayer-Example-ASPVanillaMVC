@@ -2,7 +2,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center px-2 py-2">
+    <h1>Hello!</h1>
+</div>
+<div class="px-2 py-2">
+    <p>
+        This example project is a simplified work order scheduling system and it would be part of a CMMS
+        software (computerized maintenance management system). The example pregenerates work order templates
+        for a BHS (baggage handling system) and a schedule for each template. A worker runs in the background
+        and it will create work orders from the templates at 12AM each day; this also happens on startup.
+        <br />
+        <br />
+        The website has a work order templates page which allows the user to add/edit/delete work order templates.
+        A disabled schedule will automatically be created when a work order template is created. The user can
+        enable the schedule and setup it up based on their needs. A work order can also be manually created; scheduling 
+        restrictions are ignored.
+        <br />
+        <br />
+        The website also has a read-only work orders page. The page is meant to display the work orders automatically
+        created by the background scheduler or manually created by the user. The JMayer-Example-ASPSyncfusionMVC
+        has a work order page users can interact with.
+        <br />
+        <br />
+        Background Scheduler Rules:
+        <ul>
+            <li>Only enabled template schedules are used.</li>
+            <li>Date ran must be within the template schedule's start and end dates.</li>
+            <li>
+                Follow the frequency rules:
+                <ul>
+                    <li>Daily - The scheduler creates the work order each day.</li>
+                    <li>Weekly - The scheduler creates the work order on Monday of each week.</li>
+                    <li>Monthly - The scheduler creates the work order on the 1st of each month.</li>
+                    <li>Quarterly - The scheduler creates the work order on the 1st of January, April, July and October.</li>
+                    <li>Semiyearly - The scheduler creates the work order on the 1st of January and July.</li>
+                    <li>Yearly - The scheduler creates the work order on the 1st of January.</li>
+                </ul>
+            </li>
+        </ul>
+    </p>
 </div>
