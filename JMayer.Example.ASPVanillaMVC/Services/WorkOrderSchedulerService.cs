@@ -23,11 +23,36 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
     /// </summary>
     private readonly IWorkOrderTemplateScheduleDataLayer _workOrderTemplateScheduleDataLayer;
 
+    /// <summary>
+    /// The constant for the month of April.
+    /// </summary>
+    public const int April = 4;
+
     /// <inheritdoc/>
     public TimeSpan ExpectedRuntime { get; set; } = TimeSpan.FromHours(0);
 
+    /// <summary>
+    /// The constant for the first of the month.
+    /// </summary>
+    public const int FirstOfMonth = 1;
+
+    /// <summary>
+    /// The constant for the month of January.
+    /// </summary>
+    public const int January = 1;
+
+    /// <summary>
+    /// The constant for the month of July.
+    /// </summary>
+    public const int July = 7;
+
     /// <inheritdoc/>
     public DateTime LastRanAt { get; set; } = DateTime.Today.AddDays(-1);
+
+    /// <summary>
+    /// The constant for the month of October.
+    /// </summary>
+    public const int October = 10;
 
     /// <summary>
     /// The dependency injection constructor.
@@ -54,10 +79,10 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
             (
                 obj.ScheduleType == WorkOrderTemplateScheduleType.Daily
                 || (obj.ScheduleType == WorkOrderTemplateScheduleType.Weekly && DateTime.Today.DayOfWeek == DayOfWeek.Monday)
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Monthly && DateTime.Today.Day == 1)
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Quarterly && DateTime.Today.Day == 1 && (DateTime.Today.Month == 1 || DateTime.Today.Month == 4 || DateTime.Today.Month == 7 || DateTime.Today.Month == 10))
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Semiyearly && DateTime.Today.Day == 1 && (DateTime.Today.Month == 1 || DateTime.Today.Month == 7))
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Yearly && DateTime.Today.Day == 1 && DateTime.Today.Month == 1)
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Monthly && DateTime.Today.Day == FirstOfMonth)
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Quarterly && DateTime.Today.Day == FirstOfMonth && (DateTime.Today.Month == January || DateTime.Today.Month == April || DateTime.Today.Month == July || DateTime.Today.Month == October))
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Semiyearly && DateTime.Today.Day == FirstOfMonth && (DateTime.Today.Month == January || DateTime.Today.Month == July))
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Yearly && DateTime.Today.Day == FirstOfMonth && DateTime.Today.Month == January)
             )
             && DateTime.Today >= obj.StartDate 
             && (obj.EndDate == null || DateTime.Today <= obj.EndDate)
