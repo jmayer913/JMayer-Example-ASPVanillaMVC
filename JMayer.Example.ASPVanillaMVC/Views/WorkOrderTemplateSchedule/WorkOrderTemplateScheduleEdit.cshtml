@@ -63,7 +63,7 @@
 
             <div class="form-group my-2">
                 <input type="submit" value="Save" class="btn btn-primary" /> |
-                <a asp-controller="WorkOrderTemplate" asp-action="ConfirmCreateWorkOrderView" asp-route-id="@Model.OwnerInteger64ID" class="btn-link">Create Work Order</a> |
+                <a id="create-work-order-link" asp-controller="WorkOrderTemplate" asp-action="ConfirmCreateWorkOrderView" asp-route-id="@Model.OwnerInteger64ID">Create Work Order</a> |
                 <a asp-controller="WorkOrderTemplate" asp-action="Index">Back to List</a>
             </div>
         </form>
@@ -74,27 +74,62 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript">
+        //Attribute name constants.
+        const disabledAttributeName = 'disabled';
+
+        //Class name constants.
+        const disabledLinkClassName = 'disabled-link';
+
+        //Event name constants.
+        const clickEventName = 'click';
+
+        //Property name constants.
+        const ariaDisabledPropertyName = 'aria-disabled';
+        const tabIndexPropertyName = 'tabindex';
+
+        //Id search constants.
+        const createWorkOrderLinkId = '#create-work-order-link';
+        const enabledInputId = '#enabled-input';
+        const endDateInputId = '#end-date-input';
+        const scheduleTypeSelectId = '#schedule-type-select';
+        const startDateInputId = '#start-date-input';
+
         //The function handles enabling/disabling controls based on if the schedule is enabled or not.
         function onEnabledChange(enableInputControl) {
-            var scheduleTypeSelectControl = $('#schedule-type-select');
-            var startDatetInputControl = $('#start-date-input');
-            var endDateInputControl = $('#end-date-input');
+            var scheduleTypeSelectControl = $(scheduleTypeSelectId);
+            var startDatetInputControl = $(startDateInputId);
+            var endDateInputControl = $(endDateInputId);
+            var createWorkOrderLink = $(createWorkOrderLinkId);
 
+            //Enable the controls.
             if (enableInputControl.checked) {
-                scheduleTypeSelectControl.removeAttr('disabled');
-                startDatetInputControl.removeAttr('disabled');
-                endDateInputControl.removeAttr('disabled');
+                scheduleTypeSelectControl.removeAttr(disabledAttributeName);
+                startDatetInputControl.removeAttr(disabledAttributeName);
+                endDateInputControl.removeAttr(disabledAttributeName);
+                createWorkOrderLink.removeClass(disabledLinkClassName);
+                createWorkOrderLink.removeProp(tabIndexPropertyName);
+                createWorkOrderLink.removeProp(ariaDisabledPropertyName);
+                createWorkOrderLink.off(clickEventName);
             }
+            //Disable the controls.
             else {
-                scheduleTypeSelectControl.attr('disabled', 'disabled');
-                startDatetInputControl.attr('disabled', 'disabled');
-                endDateInputControl.attr('disabled', 'disabled');
+                scheduleTypeSelectControl.attr(disabledAttributeName, disabledAttributeName);
+                startDatetInputControl.attr(disabledAttributeName, disabledAttributeName);
+                endDateInputControl.attr(disabledAttributeName, disabledAttributeName);
+                createWorkOrderLink.addClass(disabledLinkClassName);
+                createWorkOrderLink.prop(tabIndexPropertyName, '-1');
+                createWorkOrderLink.prop(ariaDisabledPropertyName, 'true');
+
+                //The function prevents the link from navigating.
+                createWorkOrderLink.click(function(e) {
+                    e.preventDefault();
+                });
             }
         }
 
         //The function sets the controls states on load.
         $(document).ready(function() {
-            onEnabledChange($('#enabled-input')[0]);
+            onEnabledChange($(enabledInputId)[0]);
         });
     </script>
 }

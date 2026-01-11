@@ -71,17 +71,26 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript">
+        //Attribute name constants.
+        const disabledAttributeName = 'disabled';
+
+        //Id search constants.
+        const otherTypeOfServiceInputId = '#other-type-of-service-input';
+
+        //Default value constants.
+        const emptyString = '';
+        const otherOptionValue = '3';
+        
         //The function handles enabling/disabling the other type input control based on the selected service type.
         function onServiceTypeChange(serviceTypeSelectControl) {
-            const otherOptionValue = '3';
-            var otherTypeInputControl = $('#other-type-of-service-input');
+            var otherTypeInputControl = $(otherTypeOfServiceInputId);
 
             if (serviceTypeSelectControl.value === otherOptionValue) {
-                otherTypeInputControl.removeAttr('disabled');
+                otherTypeInputControl.removeAttr(disabledAttributeName);
             }
             else {
-                otherTypeInputControl.val('');
-                otherTypeInputControl.attr('disabled', 'disabled');
+                otherTypeInputControl.val(emptyString);
+                otherTypeInputControl.attr(disabledAttributeName, disabledAttributeName);
             }
         }
     </script>
