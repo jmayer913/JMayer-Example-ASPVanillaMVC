@@ -126,18 +126,8 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
     [InlineData("Create Work Order Template Test Other", "Other Description", WorkOrderServiceType.Other, "Other", WorkOrderPriority.High, 60)]
     public async Task VerifyCreateWorkOrderTemplate(string name, string description, WorkOrderServiceType serviceType, string? otherTypeOfService, WorkOrderPriority priority, int daysDueFromCreation)
     {
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", daysDueFromCreation.ToString() },
-            { "description", description },
-            { "name", name },
-            { "otherTypeOfService", otherTypeOfService ?? string.Empty },
-            { "priority", ((int)priority).ToString() },
-            { "serviceType", ((int)serviceType).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent(name, description, serviceType, otherTypeOfService, priority, daysDueFromCreation);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -169,17 +159,7 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", "0" },
-            { "description", string.Empty },
-            { "name", "Create Work Order Template Duplicate Test" },
-            { "otherTypeOfService", string.Empty },
-            { "priority", ((int)WorkOrderPriority.Normal).ToString() },
-            { "serviceType", ((int)WorkOrderServiceType.Inspection).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent("Create Work Order Template Duplicate Test", string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -409,19 +389,8 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", daysDueFromCreation.ToString() },
-            { "description", description },
-            { "name", newName },
-            { "integer64ID", id.Value.ToString() },
-            { "otherTypeOfService", otherTypeOfService ?? string.Empty },
-            { "priority", ((int)priority).ToString() },
-            { "serviceType", ((int)serviceType).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent(newName, description, serviceType, otherTypeOfService, priority, daysDueFromCreation, id.Value);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -461,18 +430,7 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", "0" },
-            { "description", string.Empty },
-            { "name", "Update Work Order Template Duplicate Test 1" },
-            { "integer64ID", id.Value.ToString() },
-            { "otherTypeOfService", string.Empty },
-            { "priority", ((int)WorkOrderPriority.Normal).ToString() },
-            { "serviceType", ((int)WorkOrderServiceType.Inspection).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent("Update Work Order Template Duplicate Test 1", string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0, id.Value);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -494,19 +452,8 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task VerifyUpdateWorkOrderTemplateNameRequiredValidationFailure()
     {
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", "0" },
-            { "description", string.Empty },
-            { "name", string.Empty },
-            { "integer64ID", "1" },
-            { "otherTypeOfService", string.Empty },
-            { "priority", ((int)WorkOrderPriority.Normal).ToString() },
-            { "serviceType", ((int)WorkOrderServiceType.Inspection).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent(string.Empty, string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0, 1);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -528,19 +475,8 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task VerifyUpdateWorkOrderTemplateNotFound()
     {
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", "0" },
-            { "description", string.Empty },
-            { "integer64ID", "999999" },
-            { "name", "a name" },
-            { "otherTypeOfService", string.Empty },
-            { "priority", ((int)WorkOrderPriority.Normal).ToString() },
-            { "serviceType", ((int)WorkOrderServiceType.Inspection).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent("a name", string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0, 999999);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -570,18 +506,7 @@ public class WorkOrderTemplateUnitTest : IClassFixture<WebApplicationFactory<Pro
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "daysDueFromCreation", "0" },
-            { "description", string.Empty },
-            { "name", "Update Work Order Template Old Data Conflict Test" },
-            { "integer64ID", id.Value.ToString() },
-            { "otherTypeOfService", string.Empty },
-            { "priority", ((int)WorkOrderPriority.Low).ToString() },
-            { "serviceType", ((int)WorkOrderServiceType.Inspection).ToString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateFormUrlEncodedContent("Update Work Order Template Old Data Conflict Test", string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0, id.Value);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.

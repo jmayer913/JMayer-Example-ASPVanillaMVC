@@ -130,8 +130,8 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     /// <summary>
     /// The method verifies the work order template schedule controller can update a work order template schedule when requested by the user.
     /// </summary>
-    /// <param name="scheduleType"></param>
-    /// <param name="enabled"></param>
+    /// <param name="scheduleType">The frequency for the schedule.</param>
+    /// <param name="enabled">Whether or not the scheduler considers this work order template and schedule.</param>
     /// <returns>A Task for the async.</returns>
     [Theory]
     [InlineData(WorkOrderTemplateScheduleType.Daily, true)]
@@ -150,18 +150,8 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "endDate", string.Empty },
-            { "integer64ID", id.Value.ToString() },
-            { "isEnabled", enabled.ToString() },
-            { "ownerInteger64ID", id.Value.ToString() },
-            { "scheduleType", ((int)scheduleType).ToString() },
-            { "startDate", DateTime.Today.ToShortDateString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(id.Value, scheduleType, enabled);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -186,18 +176,8 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     [Fact]
     public async Task VerifyUpdateWorkOrderTemplateScheduleNotFound()
     {
-        Dictionary<string, string> formValues = new()
-        {
-            { "endDate", string.Empty },
-            { "integer64ID", "999999" },
-            { "isEnabled", true.ToString() },
-            { "ownerInteger64ID", "999999" },
-            { "scheduleType", ((int)WorkOrderTemplateScheduleType.Monthly).ToString() },
-            { "startDate", DateTime.Today.ToShortDateString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
         HttpClient httpClient = _factory.CreateClient();
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(999999, WorkOrderTemplateScheduleType.Monthly, true);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
@@ -227,17 +207,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        Dictionary<string, string> formValues = new()
-        {
-            { "endDate", string.Empty },
-            { "integer64ID", id.Value.ToString() },
-            { "isEnabled", true.ToString() },
-            { "ownerInteger64ID", id.Value.ToString() },
-            { "scheduleType", ((int)WorkOrderTemplateScheduleType.Monthly).ToString() },
-            { "startDate", DateTime.Today.ToShortDateString() },
-        };
-        FormUrlEncodedContent content = new(formValues);
-
+        FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(id.Value, WorkOrderTemplateScheduleType.Monthly, true);
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
