@@ -6,7 +6,7 @@ using Microsoft.Extensions.Time.Testing;
 namespace TestProject.Test.BackgroundService;
 
 #warning I feel like I should run the weekly for the entire year but I don't think there's a consistent count each year.
-#warning Maybe I can just run it for on week and test each day.
+#warning Maybe I can just run it for a week and test each day.
 
 /// <summary>
 /// The class manages testing the work order scheduler service.
@@ -60,7 +60,7 @@ public class WorkOrderSchedulerServiceUnitTest
     {
         _ = await templateDateLayer.CreateAsync(new WorkOrderTemplate()
         {
-            Name = "Weekly Work Order Created On Monday Test",
+            Name = name,
         });
 
         if (await templateDateLayer.GetSingleAsync() is null)

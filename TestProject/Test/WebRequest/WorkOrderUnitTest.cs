@@ -33,7 +33,7 @@ public class WorkOrderUnitTest : IClassFixture<WebApplicationFactory<Program>>
         HttpClient client = _factory.CreateClient();
         HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrder/Index");
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();

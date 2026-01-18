@@ -37,12 +37,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         if (id is null)
         {
-            Assert.Fail("Failed to create a work order template for the test.");
+            Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
         HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}");
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -67,13 +67,13 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         if (id is null)
         {
-            Assert.Fail("Failed to create a work order template for the test.");
+            Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
         _ = await httpClient.PostAsync($"WorkOrderTemplate/Delete/{id}", new StringContent(string.Empty));
         HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}");
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -94,7 +94,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         HttpClient httpClient = _factory.CreateClient();
         HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/1");
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -116,7 +116,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         HttpClient httpClient = _factory.CreateClient();
         HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/999999");
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -147,7 +147,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         if (id is null)
         {
-            Assert.Fail("Failed to create a work order template for the test.");
+            Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
         Dictionary<string, string> formValues = new()
@@ -164,7 +164,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         HttpClient httpClient = _factory.CreateClient();
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -200,7 +200,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         HttpClient httpClient = _factory.CreateClient();
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -224,7 +224,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         if (id is null)
         {
-            Assert.Fail("Failed to create a work order template for the test.");
+            Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
         Dictionary<string, string> formValues = new()
@@ -240,7 +240,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         string html = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -255,7 +255,7 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content);
 
-        Assert.True(httpResponseMessage.IsSuccessStatusCode, "The operation should have been successful."); //The operation must have been successful.
+        Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
         html = await httpResponseMessage.Content.ReadAsStringAsync();
