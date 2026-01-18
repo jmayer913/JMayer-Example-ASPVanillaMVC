@@ -30,6 +30,7 @@ builder.Services.AddSingleton<IWorkOrderTemplateScheduleDataLayer, WorkOrderTemp
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IWorkOrderSchedulerService, WorkOrderSchedulerService>();
 builder.Services.AddHostedService<WorkOrderSchedulerWorker>();
 

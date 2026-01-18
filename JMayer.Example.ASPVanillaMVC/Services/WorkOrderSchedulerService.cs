@@ -9,6 +9,11 @@ namespace JMayer.Example.ASPVanillaMVC.Services;
 public class WorkOrderSchedulerService : IWorkOrderSchedulerService
 {
     /// <summary>
+    /// Used to retrieve the current date and time.
+    /// </summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>
     /// Used to create the work orders.
     /// </summary>
     private readonly IWorkOrderDataLayer _workOrderDataLayer;
@@ -27,6 +32,11 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
     /// The constant for the month of April.
     /// </summary>
     public const int April = 4;
+
+    /// <summary>
+    /// The constant for the month of december.
+    /// </summary>
+    public const int December = 12;
 
     /// <inheritdoc/>
     public TimeSpan ExpectedRuntime { get; set; } = TimeSpan.FromHours(0);
@@ -57,18 +67,20 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
     /// <summary>
     /// The dependency injection constructor.
     /// </summary>
+    /// <param name="timeProvider">Used to retrieve the current date and time.</param>
     /// <param name="workOrderDataLayer">Used to create the work orders.</param>
     /// <param name="workOrderTemplateDataLayer">Used to query the templates.</param>
     /// <param name="workOrderTemplateScheduleDataLayer">Used to query the schedules.</param>
-    public WorkOrderSchedulerService(IWorkOrderDataLayer workOrderDataLayer, IWorkOrderTemplateDataLayer workOrderTemplateDataLayer, IWorkOrderTemplateScheduleDataLayer workOrderTemplateScheduleDataLayer)
+    public WorkOrderSchedulerService(TimeProvider timeProvider, IWorkOrderDataLayer workOrderDataLayer, IWorkOrderTemplateDataLayer workOrderTemplateDataLayer, IWorkOrderTemplateScheduleDataLayer workOrderTemplateScheduleDataLayer)
     {
+        _timeProvider = timeProvider;
         _workOrderDataLayer = workOrderDataLayer;
         _workOrderTemplateDataLayer = workOrderTemplateDataLayer;
         _workOrderTemplateScheduleDataLayer = workOrderTemplateScheduleDataLayer;
     }
 
     /// <inheritdoc/>
-    public bool CanCreateWorkOrders() => DateTime.Today > LastRanAt && DateTime.Now.TimeOfDay.CompareTo(ExpectedRuntime) >= 0;
+    public bool CanCreateWorkOrders() => _timeProvider.GetLocalNow() > LastRanAt && _timeProvider.GetLocalNow().TimeOfDay.CompareTo(ExpectedRuntime) >= 0;
 
     /// <inheritdoc/>
     public async Task CreateWorkOrdersAsync()
@@ -78,14 +90,14 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
             &&
             (
                 obj.ScheduleType == WorkOrderTemplateScheduleType.Daily
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Weekly && DateTime.Today.DayOfWeek == DayOfWeek.Monday)
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Monthly && DateTime.Today.Day == FirstOfMonth)
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Quarterly && DateTime.Today.Day == FirstOfMonth && (DateTime.Today.Month == January || DateTime.Today.Month == April || DateTime.Today.Month == July || DateTime.Today.Month == October))
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Semiyearly && DateTime.Today.Day == FirstOfMonth && (DateTime.Today.Month == January || DateTime.Today.Month == July))
-                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Yearly && DateTime.Today.Day == FirstOfMonth && DateTime.Today.Month == January)
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Weekly && _timeProvider.GetLocalNow().DayOfWeek == DayOfWeek.Monday)
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Monthly && _timeProvider.GetLocalNow().Day == FirstOfMonth)
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Quarterly && _timeProvider.GetLocalNow().Day == FirstOfMonth && (_timeProvider.GetLocalNow().Month == January || _timeProvider.GetLocalNow().Month == April || _timeProvider.GetLocalNow().Month == July || _timeProvider.GetLocalNow().Month == October))
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Semiyearly && _timeProvider.GetLocalNow().Day == FirstOfMonth && (_timeProvider.GetLocalNow().Month == January || _timeProvider.GetLocalNow().Month == July))
+                || (obj.ScheduleType == WorkOrderTemplateScheduleType.Yearly && _timeProvider.GetLocalNow().Day == FirstOfMonth && _timeProvider.GetLocalNow().Month == January)
             )
-            && DateTime.Today >= obj.StartDate 
-            && (obj.EndDate == null || DateTime.Today <= obj.EndDate)
+            && _timeProvider.GetLocalNow() >= obj.StartDate 
+            && (obj.EndDate == null || _timeProvider.GetLocalNow() <= obj.EndDate)
         );
 
         foreach (var schedule in schedules) 
@@ -100,8 +112,8 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
             _ = await _workOrderDataLayer.CreateAsync(new WorkOrder()
             {
                 Description = template.Description,
-                DueBy = template.DaysDueFromCreation > 0 ? DateTime.Today.AddDays(template.DaysDueFromCreation) : null,
-                Name = $"{template.Name} {DateTime.Today.ToShortDateString()}",
+                DueBy = template.DaysDueFromCreation > 0 ? _timeProvider.GetLocalNow().Date.AddDays(template.DaysDueFromCreation) : null,
+                Name = $"{template.Name} {_timeProvider.GetLocalNow().LocalDateTime.ToShortDateString()}",
                 OtherTypeOfService = template.OtherTypeOfService,
                 Priority = template.Priority,
                 ServiceType = template.ServiceType,
