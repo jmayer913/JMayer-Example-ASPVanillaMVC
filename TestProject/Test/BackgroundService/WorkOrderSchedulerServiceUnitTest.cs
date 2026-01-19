@@ -5,14 +5,16 @@ using Microsoft.Extensions.Time.Testing;
 
 namespace TestProject.Test.BackgroundService;
 
-#warning I feel like I should run the weekly for the entire year but I don't think there's a consistent count each year.
-#warning Maybe I can just run it for a week and test each day.
-
 /// <summary>
 /// The class manages testing the work order scheduler service.
 /// </summary>
 public class WorkOrderSchedulerServiceUnitTest
 {
+    /// <summary>
+    /// The constant for the number of days in a week.
+    /// </summary>
+    private const int NumberOfDaysInWeek = 7;
+
     /// <summary>
     /// The constant for the expected work order count of a daily schedule when ran for the entire year.
     /// </summary>
@@ -205,7 +207,7 @@ public class WorkOrderSchedulerServiceUnitTest
     }
 
     /// <summary>
-    /// The method verifies the scheduler can create a weekly work order when the day of execution is Monday.
+    /// The method verifies the scheduler can create a weekly work order when the day of execution is Monday of this week.
     /// </summary>
     /// <returns>A task for the async.</returns>
     [Fact]
@@ -217,48 +219,23 @@ public class WorkOrderSchedulerServiceUnitTest
         WorkOrderDataLayer workOrderDataLayer = new();
         WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
 
-        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today.AddDays(1 - (int)DateTime.Today.DayOfWeek)));
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
         bool success = await CreateWorkOrderTemplateAsync("Weekly Work Order Created On Monday Test", WorkOrderTemplateScheduleType.Weekly, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
-        
-        await schedulerService.CreateWorkOrdersAsync();
-        //There probably needs to be better checks.
+
+        DateTime startDate = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+
+        for (int day = 0; day < NumberOfDaysInWeek; day++)
+        {
+            DateTime mockDay = startDate.AddDays(day);
+            fakeTimeProvider.AdjustTime(new DateTimeOffset(mockDay));
+            await schedulerService.CreateWorkOrdersAsync();
+        }
+
         long count = await workOrderDataLayer.CountAsync();
         Assert.Equal(1, count);
-    }
-
-    /// <summary>
-    /// The method verifies the scheduler will not create a weekly work order when the day of execution is not Monday.
-    /// </summary>
-    /// <returns>A task for the async.</returns>
-    [Fact]
-    public async Task VerifyWeeklyWorkOrderNotCreatedOnNonMonday()
-    {
-        FakeTimeProvider fakeTimeProvider = new();
-        WorkOrderTemplateDataLayer templateDateLayer = new();
-        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
-        WorkOrderDataLayer workOrderDataLayer = new();
-        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
-
-        if (DateTime.Today.DayOfWeek is DayOfWeek.Monday)
-        {
-            fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today.AddDays(1)));
-        }
-        else
-        {
-            fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
-        }
-            
-        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
-
-        bool success = await CreateWorkOrderTemplateAsync("Weekly Work Order Not Created On non-Monday Test", WorkOrderTemplateScheduleType.Weekly, templateDateLayer, scheduleDataLayer);
-        Assert.True(success, TemplateScheduleSetupFailureMessage);
-
-        await schedulerService.CreateWorkOrdersAsync();
-        long count = await workOrderDataLayer.CountAsync();
-        Assert.Equal(0, count);
     }
 
     /// <summary>
