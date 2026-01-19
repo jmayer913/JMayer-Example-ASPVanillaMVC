@@ -207,6 +207,54 @@ public class WorkOrderSchedulerServiceUnitTest
     }
 
     /// <summary>
+    /// The method verifies the scheduler will only be allowed to run on or after the expected runtime.
+    /// </summary>
+    [Fact]
+    public void VerifySchedulerCannotRunBeforeExpectedRuntime()
+    {
+        FakeTimeProvider fakeTimeProvider = new();
+        WorkOrderTemplateDataLayer templateDateLayer = new();
+        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
+        WorkOrderDataLayer workOrderDataLayer = new();
+        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer)
+        {
+            ExpectedRuntime = TimeSpan.FromHours(2),
+        };
+
+        //Confirm the scheduler shouldn't run a minute before 2AM.
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today.AddHours(2).AddMinutes(-1)));
+        Assert.False(schedulerService.CanCreateWorkOrders(), "The scheduler service should not have been able to run");
+
+        //Confirm the scheduler can run at 2AM.
+        fakeTimeProvider.AdjustTime(new DateTimeOffset(DateTime.Today.AddHours(2)));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+
+        //Confirm the scheduler can run a minute after 2AM.
+        fakeTimeProvider.AdjustTime(new DateTimeOffset(DateTime.Today.AddHours(2).AddMinutes(1)));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+    }
+
+    /// <summary>
+    /// The method verifies the scheduler will not run again on the same day.
+    /// </summary>
+    [Fact]
+    public void VerifySchedulerOnlyRunsOncePerDay()
+    {
+        FakeTimeProvider fakeTimeProvider = new();
+        WorkOrderTemplateDataLayer templateDateLayer = new();
+        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
+        WorkOrderDataLayer workOrderDataLayer = new();
+        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
+
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+
+        //By default the last ran at will be yesterday so set it to today and it won't be allowed to run again.
+        schedulerService.LastRanAt = DateTime.Today;
+        Assert.False(schedulerService.CanCreateWorkOrders(), "The scheduler service should not have been able to run");
+    }
+
+    /// <summary>
     /// The method verifies the scheduler can create a semiyearly work order when the day of execution is the 1st for January and July.
     /// </summary>
     /// <returns>A task for the async.</returns>

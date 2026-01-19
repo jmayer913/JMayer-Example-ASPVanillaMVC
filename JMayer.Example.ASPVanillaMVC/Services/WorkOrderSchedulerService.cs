@@ -80,7 +80,7 @@ public class WorkOrderSchedulerService : IWorkOrderSchedulerService
     }
 
     /// <inheritdoc/>
-    public bool CanCreateWorkOrders() => _timeProvider.GetLocalNow() > LastRanAt && _timeProvider.GetLocalNow().TimeOfDay.CompareTo(ExpectedRuntime) >= 0;
+    public bool CanCreateWorkOrders() => _timeProvider.GetLocalNow().Date > LastRanAt && _timeProvider.GetLocalNow().TimeOfDay.CompareTo(ExpectedRuntime) >= 0;
 
     /// <inheritdoc/>
     public async Task CreateWorkOrdersAsync()
