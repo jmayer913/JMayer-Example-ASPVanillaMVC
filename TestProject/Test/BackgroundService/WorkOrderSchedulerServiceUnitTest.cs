@@ -58,7 +58,7 @@ public class WorkOrderSchedulerServiceUnitTest
     /// <param name="templateDateLayer">Used to create the template.</param>
     /// <param name="scheduleDataLayer">Used to update the schedule.</param>
     /// <returns>True means the work order template was successfully created and the schedule successfully set up.</returns>
-    private static async Task<bool> CreateWorkOrderTemplateAsync(string name, WorkOrderTemplateScheduleType scheduleType, WorkOrderTemplateDataLayer templateDateLayer, WorkOrderTemplateScheduleDataLayer scheduleDataLayer)
+    private static async Task<bool> CreateWorkOrderTemplateAsync(string name, WorkOrderTemplateScheduleType scheduleType, bool enabled, WorkOrderTemplateDataLayer templateDateLayer, WorkOrderTemplateScheduleDataLayer scheduleDataLayer)
     {
         _ = await templateDateLayer.CreateAsync(new WorkOrderTemplate()
         {
@@ -77,9 +77,10 @@ public class WorkOrderSchedulerServiceUnitTest
             return false;
         }
 
-        schedule.IsEnabled = true;
+        schedule.IsEnabled = enabled;
         schedule.ScheduleType = scheduleType;
         schedule.StartDate = new DateTime(DateTime.Today.Year, 1, 1);
+        schedule.EndDate = schedule.StartDate.AddYears(1).AddDays(-1);
         _ = await scheduleDataLayer.UpdateAsync(schedule);
 
         return true;
@@ -101,13 +102,37 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Daily Work Order Created On Each Day Test", WorkOrderTemplateScheduleType.Daily, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Daily Work Order Created On Each Day Test", WorkOrderTemplateScheduleType.Daily, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
         long count = await workOrderDataLayer.CountAsync();
         Assert.Equal(ExpectedDailyWorkOrderCount, count);
+    }
+
+    /// <summary>
+    /// The method verifies the scheduler will ignore a work order template when its schedule is disabled.
+    /// </summary>
+    /// <returns>A task for the async.</returns>
+    [Fact]
+    public async Task VerifyDisabledWorkOrderNotCreated()
+    {
+        FakeTimeProvider fakeTimeProvider = new();
+        WorkOrderTemplateDataLayer templateDateLayer = new();
+        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
+        WorkOrderDataLayer workOrderDataLayer = new();
+        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
+
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+
+        bool success = await CreateWorkOrderTemplateAsync("Disabled Work Order Not Created Test", WorkOrderTemplateScheduleType.Daily, false, templateDateLayer, scheduleDataLayer);
+        Assert.True(success, TemplateScheduleSetupFailureMessage);
+
+        await schedulerService.CreateWorkOrdersAsync();
+        long count = await workOrderDataLayer.CountAsync();
+        Assert.Equal(0, count);
     }
 
     /// <summary>
@@ -126,7 +151,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Monthly Work Order Created On 1st Test", WorkOrderTemplateScheduleType.Monthly, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Monthly Work Order Created On 1st Test", WorkOrderTemplateScheduleType.Monthly, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
@@ -151,7 +176,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Quarterly Work Order Created On January 1st, April 1st, July 1st, October 1st Test", WorkOrderTemplateScheduleType.Quarterly, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Quarterly Work Order Created On January 1st, April 1st, July 1st, October 1st Test", WorkOrderTemplateScheduleType.Quarterly, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
@@ -174,8 +199,8 @@ public class WorkOrderSchedulerServiceUnitTest
 
             for (int day = WorkOrderSchedulerService.FirstOfMonth; day <= daysInMonth; day++)
             {
-                DateTime mockDay = new(DateTime.Today.Year, month, day);
-                fakeTimeProvider.AdjustTime(new DateTimeOffset(mockDay));
+                DateTime runDay = new(DateTime.Today.Year, month, day);
+                fakeTimeProvider.AdjustTime(new DateTimeOffset(runDay));
                 await schedulerService.CreateWorkOrdersAsync();
             }
         }
@@ -197,7 +222,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Semiyearly Work Order Created On January 1st, July 1st Test", WorkOrderTemplateScheduleType.Semiyearly, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Semiyearly Work Order Created On January 1st, July 1st Test", WorkOrderTemplateScheduleType.Semiyearly, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
@@ -222,20 +247,80 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Weekly Work Order Created On Monday Test", WorkOrderTemplateScheduleType.Weekly, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Weekly Work Order Created On Monday Test", WorkOrderTemplateScheduleType.Weekly, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         DateTime startDate = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
 
         for (int day = 0; day < NumberOfDaysInWeek; day++)
         {
-            DateTime mockDay = startDate.AddDays(day);
-            fakeTimeProvider.AdjustTime(new DateTimeOffset(mockDay));
+            DateTime runDay = startDate.AddDays(day);
+            fakeTimeProvider.AdjustTime(new DateTimeOffset(runDay));
             await schedulerService.CreateWorkOrdersAsync();
         }
 
         long count = await workOrderDataLayer.CountAsync();
         Assert.Equal(1, count);
+    }
+
+    /// <summary>
+    /// The method verifies the scheduler will ignore a work order template when the schedule has  its schedule has a future start date.
+    /// </summary>
+    /// <returns>A task for the async.</returns>
+    [Fact]
+    public async Task VerifyWorkOrderNotCreatedAfterEndDate()
+    {
+        FakeTimeProvider fakeTimeProvider = new();
+        WorkOrderTemplateDataLayer templateDateLayer = new();
+        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
+        WorkOrderDataLayer workOrderDataLayer = new();
+        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
+
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+
+        bool success = await CreateWorkOrderTemplateAsync("Disabled Work Order Not Created Test", WorkOrderTemplateScheduleType.Daily, true, templateDateLayer, scheduleDataLayer);
+        Assert.True(success, TemplateScheduleSetupFailureMessage);
+
+        //The default end date used by CreateWorkOrderTemplateAsync() is the last day of this year so have the run day on the day after.
+        DateTime runDay = new(DateTime.Today.Year, 1, 1);
+        runDay = runDay.AddYears(1);
+
+        fakeTimeProvider.AdjustTime(runDay);
+        await schedulerService.CreateWorkOrdersAsync();
+
+        long count = await workOrderDataLayer.CountAsync();
+        Assert.Equal(0, count);
+    }
+
+    /// <summary>
+    /// The method verifies the scheduler will ignore a work order template when its scheduled to start of a future date.
+    /// </summary>
+    /// <returns>A task for the async.</returns>
+    [Fact]
+    public async Task VerifyWorkOrderNotCreatedBeforeStartDate()
+    {
+        FakeTimeProvider fakeTimeProvider = new();
+        WorkOrderTemplateDataLayer templateDateLayer = new();
+        WorkOrderTemplateScheduleDataLayer scheduleDataLayer = new(templateDateLayer);
+        WorkOrderDataLayer workOrderDataLayer = new();
+        WorkOrderSchedulerService schedulerService = new(fakeTimeProvider, workOrderDataLayer, templateDateLayer, scheduleDataLayer);
+
+        fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
+        Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
+
+        bool success = await CreateWorkOrderTemplateAsync("Disabled Work Order Not Created Test", WorkOrderTemplateScheduleType.Daily, true, templateDateLayer, scheduleDataLayer);
+        Assert.True(success, TemplateScheduleSetupFailureMessage);
+
+        //The default start date used by CreateWorkOrderTemplateAsync() is the first of this year so have the run day on the day before that.
+        DateTime runDay = new(DateTime.Today.Year, 1, 1);
+        runDay = runDay.AddDays(-1);
+
+        fakeTimeProvider.AdjustTime(runDay);
+        await schedulerService.CreateWorkOrdersAsync();
+
+        long count = await workOrderDataLayer.CountAsync();
+        Assert.Equal(0, count);
     }
 
     /// <summary>
@@ -254,7 +339,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.SetUtcNow(new DateTimeOffset(DateTime.Today));
         Assert.True(schedulerService.CanCreateWorkOrders(), SchedulerCannotRunFailureMessage);
 
-        bool success = await CreateWorkOrderTemplateAsync("Yearly Work Order Created On January 1st Test", WorkOrderTemplateScheduleType.Yearly, templateDateLayer, scheduleDataLayer);
+        bool success = await CreateWorkOrderTemplateAsync("Yearly Work Order Created On January 1st Test", WorkOrderTemplateScheduleType.Yearly, true, templateDateLayer, scheduleDataLayer);
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
