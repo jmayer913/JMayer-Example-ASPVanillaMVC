@@ -1,0 +1,115 @@
+﻿@model JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate
+
+@{
+    ViewData["Title"] = "Edit Work Order Template";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Work Order Templates</h1>
+
+<h4>Edit @Model.Name Template</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Update">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input asp-for="Integer64ID" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="CreatedOn" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="LastEditedOn" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" title="Enter a name for the work order" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" title="Enter a description that describes the work order" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="ServiceType" class="control-label">Service Type</label>
+                <select id="service-type-select" asp-for="ServiceType" class="form-control" title="Select the type of service required for the work order" onchange="onServiceTypeChange(this)">
+                    <option value="0">Inspection</option>
+                    <option value="1">Routine</option>
+                    <option value="2">Reactive</option>
+                    <option value="3">Other</option>
+                </select>
+                <span asp-validation-for="ServiceType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="OtherTypeOfService" class="control-label">Other Type of Service</label>
+                <input id="other-type-of-service-input" asp-for="OtherTypeOfService" class="form-control" title="Enter a name that describes the service when other is selected" disabled />
+                <span asp-validation-for="OtherTypeOfService" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="Priority" class="control-label"></label>
+                <select asp-for="Priority" class="form-control" title="Select a priority for completion for the work order">
+                    <option value="0">Low</option>
+                    <option value="1">Normal</option>
+                    <option value="2">High</option>
+                </select>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+
+            <div class="form-group my-2">
+                <label asp-for="DaysDueFromCreation" class="control-label">Days Due From Creation</label>
+                <input asp-for="DaysDueFromCreation" class="form-control" title="Enter the number of days the work order will be due from when its created or 0 for no due date" />
+                <span asp-validation-for="DaysDueFromCreation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        //Attribute name constants.
+        const disabledAttributeName = 'disabled';
+
+        //Id search constants.
+        const otherTypeOfServiceInputId = '#other-type-of-service-input';
+        const serviceTypeSelectId = '#service-type-select';
+
+        //Default value constants.
+        const emptyString = '';
+        const otherOptionValue = '3';
+
+        //The function handles enabling/disabling the other type input control based on the selected service type.
+        function onServiceTypeChange(serviceTypeSelectControl) {
+            var otherTypeInputControl = $(otherTypeOfServiceInputId);
+
+            if (serviceTypeSelectControl.value === otherOptionValue) {
+                otherTypeInputControl.removeAttr(disabledAttributeName);
+            }
+            else {
+                otherTypeInputControl.val(emptyString);
+                otherTypeInputControl.attr(disabledAttributeName, disabledAttributeName);
+            }
+        }
+
+        //The function sets the controls states on load.
+        $(document).ready(function() {
+            onServiceTypeChange($(serviceTypeSelectId)[0]);
+        });
+    </script>
+}

@@ -1,0 +1,79 @@
+﻿@using JMayer.Web.Mvc.Extension
+@model IEnumerable<JMayer.Example.ASPVanillaMVC.Models.WorkOrderTemplate>
+
+@{
+    ViewData["Title"] = "Create Work Order Template";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Work Order Templates</h1>
+
+<p>
+    <a asp-action="AddView">Create a New Template</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="col-2"></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceType).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OtherTypeOfService).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysDueFromCreation).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedOn).SpaceCapitalLetters()
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastEditedOn).SpaceCapitalLetters()
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.ActionLink("Schedule", "EditView", "WorkOrderTemplateSchedule", new { id = item.Integer64ID }) |
+                @Html.ActionLink("Edit", "EditView", new { id = item.Integer64ID }) |
+                @Html.ActionLink("Delete", "DeleteView", new { id = item.Integer64ID })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OtherTypeOfService)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DaysDueFromCreation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastEditedOn)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
