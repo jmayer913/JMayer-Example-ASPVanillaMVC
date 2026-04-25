@@ -17,14 +17,14 @@ internal static class DataHelper
     public static async Task<long?> CreateWorkOrderTemplateAsync(HttpClient httpClient, string name)
     {
         FormUrlEncodedContent content = CreateWorkOrderTemplateFormUrlEncodedContent(name, string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0);
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content, CancellationToken.None);
 
         if (httpResponseMessage.IsSuccessStatusCode is false || httpResponseMessage.StatusCode is HttpStatusCode.NoContent)
         {
             return null;
         }
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync();
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
 
         if (string.IsNullOrEmpty(html))
         {
@@ -102,15 +102,27 @@ internal static class DataHelper
     /// <param name="enabled">Whether or not the scheduler considers this work order template and schedule.</param>
     /// <returns>The form url encoded content for the work order template schedule.</returns>
     public static FormUrlEncodedContent CreateWorkOrderTemplateScheduleFormUrlEncodedContent(long id, WorkOrderTemplateScheduleType scheduleType, bool enabled)
+        => CreateWorkOrderTemplateScheduleFormUrlEncodedContent(id, scheduleType, enabled, DateTime.Today, null);
+
+    /// <summary>
+    /// The method return the form url encoded content for a work order template schedule.
+    /// </summary>
+    /// <param name="id">The record identifier.</param>
+    /// <param name="scheduleType">The frequency for the schedule.</param>
+    /// <param name="enabled">Whether or not the scheduler considers this work order template and schedule.</param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <returns>The form url encoded content for the work order template schedule.</returns>
+    public static FormUrlEncodedContent CreateWorkOrderTemplateScheduleFormUrlEncodedContent(long id, WorkOrderTemplateScheduleType scheduleType, bool enabled, DateTime startDate, DateTime? endDate)
     {
         Dictionary<string, string> formValues = new()
         {
-            { "endDate", string.Empty },
+            { "endDate", endDate is not null ? endDate.Value.ToShortDateString() : string.Empty },
             { "integer64ID", id.ToString() },
             { "isEnabled", enabled.ToString() },
             { "ownerInteger64ID", id.ToString() },
             { "scheduleType", ((int)scheduleType).ToString() },
-            { "startDate", DateTime.Today.ToShortDateString() },
+            { "startDate", startDate.ToShortDateString() },
         };
         return new FormUrlEncodedContent(formValues);
     }

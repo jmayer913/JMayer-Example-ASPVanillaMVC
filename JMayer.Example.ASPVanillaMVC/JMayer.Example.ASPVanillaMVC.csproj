@@ -11,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JMayer.Web.Mvc" Version="9.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\JMayer-Web-Mvc-Library\JMayer.Web.Mvc\JMayer.Web.Mvc.csproj" />
   </ItemGroup>
 
 </Project>

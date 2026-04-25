@@ -1,4 +1,5 @@
 ﻿using JMayer.Data.Data;
+using JMayer.Data.DataAnnotations;
 
 namespace JMayer.Example.ASPVanillaMVC.Models;
 
@@ -12,6 +13,7 @@ public class WorkOrderTemplateSchedule : SubDataObject
     /// The property gets/sets when the scheduler will stop using the schedule.
     /// </summary>
     /// <remarks>Null means the schedule never ends.</remarks>
+    [CompareToOtherMember(otherMemberName: nameof(StartDate), compareToOperation: ComparisonOperation.GreaterThanOrEqual, passRegisteredMemberIfNull: true, ErrorMessage = "The End Date must be greater than or equal to the Start Date.")]
     public DateTime? EndDate { get; set; }
 
     /// <summary>
