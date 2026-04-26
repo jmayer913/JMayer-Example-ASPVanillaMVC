@@ -40,12 +40,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}", CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}", TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -70,13 +70,13 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
             Assert.Fail(Constants.CreateTemplateFailureMessage);
         }
 
-        _ = await httpClient.PostAsync($"WorkOrderTemplate/Delete/{id}", new StringContent(string.Empty), CancellationToken.None);
-        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}", CancellationToken.None);
+        _ = await httpClient.PostAsync($"WorkOrderTemplate/Delete/{id}", new StringContent(string.Empty), TestContext.Current.CancellationToken);
+        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"WorkOrderTemplateSchedule/EditView/{id}", TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -92,12 +92,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     public async Task VerifyEditView()
     {
         HttpClient httpClient = _factory.CreateClient();
-        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/1", CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/1", TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -114,12 +114,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     public async Task VerifyEditViewNotFound()
     {
         HttpClient httpClient = _factory.CreateClient();
-        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/999999", CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("WorkOrderTemplateSchedule/EditView/999999", TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -152,12 +152,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
 
         HttpClient httpClient = _factory.CreateClient();
         FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(id.Value, scheduleType, enabled);
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -178,12 +178,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     {
         HttpClient httpClient = _factory.CreateClient();
         FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(1, WorkOrderTemplateScheduleType.Daily, true, DateTime.Today, DateTime.Today.AddDays(-1));
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -201,12 +201,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
     {
         HttpClient httpClient = _factory.CreateClient();
         FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(999999, WorkOrderTemplateScheduleType.Monthly, true);
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -231,12 +231,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         }
 
         FormUrlEncodedContent content = DataHelper.CreateWorkOrderTemplateScheduleFormUrlEncodedContent(id.Value, WorkOrderTemplateScheduleType.Monthly, true);
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);
@@ -246,12 +246,12 @@ public class WorkOrderTemplateScheduleUnitTest : IClassFixture<WebApplicationFac
         Assert.DoesNotContain(Constants.NotFoundHtmlSearchTag, html);
         Assert.Contains("Update Work Order Template Schedule Old Data Conflict Test", html);
 
-        httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, CancellationToken.None);
+        httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplateSchedule/Update", content, TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);

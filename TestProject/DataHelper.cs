@@ -17,14 +17,14 @@ internal static class DataHelper
     public static async Task<long?> CreateWorkOrderTemplateAsync(HttpClient httpClient, string name)
     {
         FormUrlEncodedContent content = CreateWorkOrderTemplateFormUrlEncodedContent(name, string.Empty, WorkOrderServiceType.Inspection, string.Empty, WorkOrderPriority.Normal, 0);
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content, CancellationToken.None);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("WorkOrderTemplate/Create", content, TestContext.Current.CancellationToken);
 
         if (httpResponseMessage.IsSuccessStatusCode is false || httpResponseMessage.StatusCode is HttpStatusCode.NoContent)
         {
             return null;
         }
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         if (string.IsNullOrEmpty(html))
         {
