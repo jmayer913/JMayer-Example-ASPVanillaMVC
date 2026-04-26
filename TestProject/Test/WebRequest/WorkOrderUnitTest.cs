@@ -31,12 +31,12 @@ public class WorkOrderUnitTest : IClassFixture<WebApplicationFactory<Program>>
     public async Task VerifyIndexView()
     {
         HttpClient client = _factory.CreateClient();
-        HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrder/Index");
+        HttpResponseMessage httpResponseMessage = await client.GetAsync("WorkOrder/Index", TestContext.Current.CancellationToken);
 
         Assert.True(httpResponseMessage.IsSuccessStatusCode, Constants.NonSuccessfulResponseFailureMessage); //The operation must have been successful.
         Assert.NotEqual(HttpStatusCode.NoContent, httpResponseMessage.StatusCode); //Content must have been returned.
 
-        string html = await httpResponseMessage.Content.ReadAsStringAsync();
+        string html = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         //HTML must have been returned.
         Assert.NotEmpty(html);

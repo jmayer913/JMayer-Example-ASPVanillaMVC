@@ -1,4 +1,5 @@
 ﻿using JMayer.Data.Data;
+using JMayer.Data.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace JMayer.Example.ASPVanillaMVC.Models;
@@ -12,7 +13,7 @@ public class WorkOrderTemplate : DataObject
     /// The property gets/sets the number of days the work order will be due from when its created.
     /// </summary>
     /// <remarks>Zero represents no due date.</remarks>
-    [Range(0, Int32.MaxValue)]
+    [Range(0, int.MaxValue)]
     public int DaysDueFromCreation { get; set; }
 
     /// <inheritdoc/>
@@ -23,6 +24,7 @@ public class WorkOrderTemplate : DataObject
     /// <summary>
     /// The property gets/sets the user defined type of service when Other is selected for the service.
     /// </summary>
+    [RequiredDependsOn(nameof(ServiceType), WorkOrderServiceType.Other)]
     public string? OtherTypeOfService { get; set; }
 
     /// <summary>
