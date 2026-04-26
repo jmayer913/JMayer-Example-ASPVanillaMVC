@@ -107,7 +107,7 @@ public class WorkOrderSchedulerServiceUnitTest
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(ExpectedDailyWorkOrderCount, count);
     }
 
@@ -131,7 +131,7 @@ public class WorkOrderSchedulerServiceUnitTest
         Assert.True(success, TemplateScheduleSetupFailureMessage);
 
         await schedulerService.CreateWorkOrdersAsync();
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(0, count);
     }
 
@@ -156,7 +156,7 @@ public class WorkOrderSchedulerServiceUnitTest
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(ExpectedMonthlyWorkOrderCount, count);
     }
 
@@ -181,7 +181,7 @@ public class WorkOrderSchedulerServiceUnitTest
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(ExpectedQuarterlyWorkOrderCount, count);
     }
 
@@ -275,7 +275,7 @@ public class WorkOrderSchedulerServiceUnitTest
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(ExpectedSemiyearlyWorkOrderCount, count);
     }
 
@@ -307,7 +307,7 @@ public class WorkOrderSchedulerServiceUnitTest
             await schedulerService.CreateWorkOrdersAsync();
         }
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(1, count);
     }
 
@@ -337,7 +337,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.AdjustTime(runDay);
         await schedulerService.CreateWorkOrdersAsync();
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(0, count);
     }
 
@@ -367,7 +367,7 @@ public class WorkOrderSchedulerServiceUnitTest
         fakeTimeProvider.AdjustTime(runDay);
         await schedulerService.CreateWorkOrdersAsync();
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(0, count);
     }
 
@@ -392,7 +392,7 @@ public class WorkOrderSchedulerServiceUnitTest
 
         await RunSchedulerForEachDayInYearAsync(fakeTimeProvider, schedulerService);
 
-        long count = await workOrderDataLayer.CountAsync();
+        long count = await workOrderDataLayer.CountAsync(TestContext.Current.CancellationToken);
         Assert.Equal(ExpectedYearlyWorkOrderCount, count);
     }
 }
